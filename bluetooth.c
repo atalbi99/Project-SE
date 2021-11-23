@@ -1,7 +1,7 @@
 #include "bluetooth.h"
 #define FOSC 13000000
 #define BAUD 38400
-#define CALCUBRR FOSC/16*BAUD-1
+#define CALCUBRR (FOSC/(16*BAUD))-1
 
 uint8_t receivedValue;
 volatile uint8_t usartFlag;
