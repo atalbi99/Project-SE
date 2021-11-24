@@ -1,10 +1,15 @@
 #include "bluetooth.h"
+#include <avr/io.h>
+#include <util/delay.h>
+#include <avr/interrupt.h>
+#include <stdio.h>
 #define FOSC 13000000
 #define BAUD 38400
-#define CALCUBRR (FOSC/(16*BAUD))-1
+#define CALCUBBR (FOSC/(16*BAUD))-1
 
-uint8_t receivedValue;
-volatile uint8_t usartFlag;
+
+unsigned char receivedValue = 'i';
+int usartFlag = 0;
 
 
 void USART_init(void){
@@ -27,7 +32,7 @@ void USART_putstring(char *str){
     }
 }
 
-unsigned char USART_received(void){
+unsigned char USART_receive(void){
     while(!(UCSR0A & _BV(UDRE0)));
     return UDR0;
 }
@@ -39,5 +44,8 @@ void USART_send(unsigned char data){
 
 ISR(USART_RX_vect){
     usartFlag = 1;
-    receivedValue = USART_received();
+    receivedValue = USART_receive();
+        if(receivedValue == 'A'){
+            USART_putstring("coucou");
 } 
+}
