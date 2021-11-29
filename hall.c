@@ -10,7 +10,7 @@ void init_hall()
     DDRD &= ~(1<<DDD0); 
     PORTD |= (1<<PORTD0);
     // Enable interruption of detector on rising edge 
-    EICRA |= (1<<ISC01)|(1<<ISC00); //Active le mode détection de fronts montants du INT0
+    EICRA |= (1<<ISC01)|(1<<ISC00);
     // Activate INT0
     EIMSK |= (1<<INT0);
     // Set global interrupt enable
