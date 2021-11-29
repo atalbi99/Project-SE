@@ -5,12 +5,7 @@
 #include <stdio.h>
 #define FOSC 13000000
 #define BAUD 38400
-#define CALCUBBR (FOSC/(16*BAUD))-1
-
-
-unsigned char receivedValue = 'i';
-int usartFlag = 0;
-
+#define CALCUBBR FOSC/16/BAUD-1
 
 void USART_init(void){
     UBRR0H = (CALCUBBR >> 8);
@@ -20,8 +15,6 @@ void USART_init(void){
     UCSR0B |= _BV(RXEN0) | _BV(TXEN0);//enable RX and TX
     UCSR0C |= _BV(UCSZ01) | _BV(UCSZ00);//set frame: 8data, 1stop
     sei();//global interrupt enable flaag set
-    usartFlag = 0;
-    receivedValue = 0;
 }
 
 
@@ -42,10 +35,3 @@ void USART_send(unsigned char data){
     UDR0 = data;
 }
 
-ISR(USART_RX_vect){
-    usartFlag = 1;
-    receivedValue = USART_receive();
-        if(receivedValue == 'A'){
-            USART_putstring("coucou");
-} 
-}
