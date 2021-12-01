@@ -1,7 +1,7 @@
 F_CPU := 13000000
-SOURCE := main.c bluetooth.h
+SOURCE := main.c
 
-DEP= main.o bluetooth.o
+DEP= main.o bluetooth.o spi.o hall.o
 
 ALL=main
 
@@ -22,4 +22,4 @@ install:  main.bin
 	avrdude -c usbasp -P /dev/ttyACM0 -p m328p -U flash:w:main.bin
 
 clean:
-	rm  boton_led.elf  boton_led.bin	
+	rm  main.elf  main.bin	main.o	bluetooth.o	spi.o	hall.o

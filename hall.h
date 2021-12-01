@@ -1,7 +1,7 @@
 #ifndef HALL_H
 #define HALL_H
 
-
-void init_hall();
+void Effet_Hall(void);
+//void init_hall();
 
 #endif
