@@ -1,39 +1,10 @@
-// Fichier test faire clignoter la led bleue sur effet Hall
-
-//#################################     CONFIGURATION    #########################################          
-
-// AVR headers
-#include <avr/io.h>
-#include <stdio.h>
-#include <util/delay.h>
-#include <stdint.h>
-#include "hall.h"
-
-
-void Effet_Hall(void) {
-
-   // Pin is output (low impedance) - LED bleue
-   DDRD |= _BV(PD6);
-   // Pin is input (bit 2 == 0) - entrée pin effet Hall
-   DDRD &= ~_BV(PD2);        
-
- //#################################     Boucle infinie    #########################################
-
-   while(1){   
-
-      if (!(PIND & 0x04)){
-         PORTD |= _BV(PD6);  
-      }            
-      PORTD &= ~_BV(PD6); 
-   }                   
-} 
-
-
-/* #include "bluetooth.h"
+#include "bluetooth.h"
 #include <avr/io.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
 #include <stdio.h>
+
+int hall_detect = 0;
 
 void init_hall()
 {
@@ -51,4 +22,3 @@ void init_hall()
 ISR(INT0_vect){
     hall_detect++;
 }
- */

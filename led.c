@@ -13,8 +13,8 @@ void leds_control(uint8_t data1, uint8_t data2)
 
     PORTC |= (1<<PORTC1);
 
-    SPI_MasterTransmit(data1);
-    SPI_MasterTransmit(data2);
+    SPI_master_transmit(data1);
+    SPI_master_transmit(data2);
 
     PORTC |= (1<<PORTC2);
 
@@ -23,8 +23,3 @@ void leds_control(uint8_t data1, uint8_t data2)
     PORTC &= ~(1<<PORTC1);
 }
 
-int main(int argc, char const *argv[])
-{
-    /* code */
-    return 0;
-}
