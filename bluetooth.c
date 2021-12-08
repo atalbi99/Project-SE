@@ -6,6 +6,10 @@
 #define FOSC 13000000
 #define BAUD 38400
 #define CALCUBBR FOSC/16/BAUD-1
+// buffers are used to store data received
+char USART_buffer[100]= "INIT";
+int index_buffer = 0;
+
 
 void USART_init(void){
     UBRR0H = (CALCUBBR >> 8);
@@ -20,7 +24,7 @@ void USART_init(void){
 
 void USART_putstring(char *str){
     while(*str != 0x00){
-        USART_send(*str);
+        USART_send_char(*str);
         str++;
     }
 }
@@ -30,8 +34,37 @@ unsigned char USART_receive(void){
     return UDR0;
 }
 
-void USART_send(unsigned char data){
+void USART_send_char(unsigned char data){
     while(!(UCSR0A & _BV(UDRE0)));
     UDR0 = data;
 }
+
+
+
+ISR(USART_RX_vect)
+{
+
+  unsigned char c =  UDR0; 
+
+  if( c=='\n' ){  
+    USART_buffer[index_buffer] = index_buffer > 0 ? '\0' : USART_buffer[index_buffer];
+    index_buffer = 0;
+    return;
+  }
+
+  USART_buffer[index_buffer] = c;  
+
+  index_buffer++;
+  if (index_buffer >= 100 - 1)
+  {
+    index_buffer = 0;
+  }
+}
+
+
+void bl_reset_buffer()
+{
+  USART_buffer[0] = '\0';
+}
+
 

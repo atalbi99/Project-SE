@@ -95,20 +95,21 @@ void init_counter_time(void){
 
 
 
-
 int main(void)
 {
-
+  int se, mi, ho = 0;
+    
 counter_seconds = 0;
 counter_time = 0;
-uint16_t seconds = 0;
-uint16_t minutes = 50;
-uint16_t hours = 15;
 uint16_t hours_analog = 0;
 uint16_t time_seconds = 0;
 uint16_t time_minutes = 0;
 uint16_t time_hours = 0;
 uint16_t step=0;
+uint16_t seconds = 0;
+uint16_t minutes = 50;
+uint16_t hours = 15;
+
 
 // régler le temps
 if(seconds >= 60){
@@ -127,17 +128,69 @@ else{
   hours_analog = hours;
 }
 
-USART_init();
+
+  USART_init();
 SPI_master_init();
 init_interrupt();
 init_seconds();
 init_counter_time();
 
-
-
 while(1){
-// 1 tour detecté
-  if( hall_detect >= 1)
+
+
+   //USART_putstring( "Enter time \n" );
+  // _delay_ms(1);
+
+if ( USART_buffer[0] != '\0' ){
+
+  if(USART_buffer[0] == 'h'){     
+    int i = 1;
+    for(i=1;i<7;i++){                
+      if(USART_buffer[i] == '\0'){
+        bl_reset_buffer();           
+    
+      }
+    }
+
+    char h1 = USART_buffer[1];
+    char h2 = USART_buffer[2];
+    int ho = 10*((int)h1 - 48)+((int)h2 - 48);
+    char m1 = USART_buffer[3];
+    char m2 = USART_buffer[4];
+    int mi = 10*((int)m1 - 48)+((int)m2- 48);
+    char s1 = USART_buffer[5];
+    char s2 = USART_buffer[6];    
+    int se = 10*((int)s1 - 48)+((int)s2 - 48);
+
+    USART_putstring( "time changed\n" );
+
+    if(se >= 60){
+  se -= 60;
+}
+if(mi >= 60){
+  mi -= 60;
+}
+if (ho>= 24){
+  ho -= 24;
+}
+if(ho >= 12){
+  hours_analog = ho - 12;
+}
+else{
+  hours_analog = ho;
+}
+     uint16_t seconds = se;
+uint16_t minutes = mi;
+uint16_t hours = ho;
+  }
+
+  bl_reset_buffer(); 
+ 
+}
+
+
+
+ if( hall_detect >= 1)
   {
       step = counter_time / 60;
       counter_time = 0;
@@ -190,7 +243,17 @@ if (seconds * 1625 == counter_seconds)
       else{
         time_hours = hours_analog + 6;
       }
+
+      uint16_t s = time_seconds * step;
+      
+      if (s <= counter_time && s + 8 >= counter_time)
+        {
+          leds_control(7, 0);
+        }
+        else
+        {
       uint16_t m = time_minutes * step;
+
       if (m <= counter_time && m + 8 >= counter_time)
         {
           leds_control(0, 255);
@@ -208,8 +271,6 @@ if (seconds * 1625 == counter_seconds)
             leds_control(0, 0);
           }
         }
-    
+        }
 }
 }
-
-
