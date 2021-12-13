@@ -97,7 +97,6 @@ void init_counter_time(void){
 
 int main(void)
 {
-  int se, mi, ho = 0;
     
 counter_seconds = 0;
 counter_time = 0;
@@ -109,7 +108,9 @@ uint16_t step=0;
 uint16_t seconds = 0;
 uint16_t minutes = 50;
 uint16_t hours = 15;
-
+uint16_t se = 0;
+uint16_t mi = 0;
+uint16_t ho = 0;
 
 // régler le temps
 if(seconds >= 60){
@@ -129,7 +130,7 @@ else{
 }
 
 
-  USART_init();
+USART_init();
 SPI_master_init();
 init_interrupt();
 init_seconds();
@@ -144,27 +145,24 @@ while(1){
 if ( USART_buffer[0] != '\0' ){
 
   if(USART_buffer[0] == 'h'){     
-    int i = 1;
-    for(i=1;i<7;i++){                
-      if(USART_buffer[i] == '\0'){
-        bl_reset_buffer();           
-    
-      }
-    }
-
     char h1 = USART_buffer[1];
     char h2 = USART_buffer[2];
-    int ho = 10*((int)h1 - 48)+((int)h2 - 48);
+    ho = 10*((int)h1 - 48)+((int)h2 - 48);
     char m1 = USART_buffer[3];
     char m2 = USART_buffer[4];
-    int mi = 10*((int)m1 - 48)+((int)m2- 48);
+    mi = 10*((int)m1 - 48)+((int)m2- 48);
     char s1 = USART_buffer[5];
     char s2 = USART_buffer[6];    
-    int se = 10*((int)s1 - 48)+((int)s2 - 48);
+    se = 10*((int)s1 - 48)+((int)s2 - 48);
 
-    USART_putstring( "time changed\n" );
+    USART_putstring("time changed\n");
+    USART_send_char(USART_buffer[1]);
+    USART_send_char(USART_buffer[2]);
+    USART_send_char(USART_buffer[3]);
+    USART_send_char(USART_buffer[4]);
+  
 
-    if(se >= 60){
+if(se >= 60){
   se -= 60;
 }
 if(mi >= 60){

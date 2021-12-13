@@ -6,7 +6,7 @@
 #define FOSC 13000000
 #define BAUD 38400
 #define CALCUBBR FOSC/16/BAUD-1
-// buffers are used to store data received
+
 char USART_buffer[100]= "INIT";
 int index_buffer = 0;
 
@@ -47,13 +47,11 @@ ISR(USART_RX_vect)
   unsigned char c =  UDR0; 
 
   if( c=='\n' ){  
-    USART_buffer[index_buffer] = index_buffer > 0 ? '\0' : USART_buffer[index_buffer];
+    USART_buffer[index_buffer] =  '\0';
     index_buffer = 0;
     return;
   }
-
   USART_buffer[index_buffer] = c;  
-
   index_buffer++;
   if (index_buffer >= 100 - 1)
   {
